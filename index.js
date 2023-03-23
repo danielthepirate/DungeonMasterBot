@@ -16,35 +16,60 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const conversationHistory = {};
+
 // check for messages on discord when sent
 client.on("messageCreate", async function (message) {
     try {
         // don't respond to bots (including self)
         if (message.author.bot) return;
 
+        const userId = message.author.id;
+        const userMessage = message.content;
+        const previousMessages = conversationHistory[userId] || [];
+        const inputMessages = [
+            ...previousMessages.map((message) => ({
+                role: "user",
+                text: message,
+            })),
+            { role: "user", text: userMessage },
+        ];
+
         // send a request using the open ai api
-        const gptResponse = await openai.createChatCompletion({
+        const response = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
                 {
                     role: "user",
                     content: `You are are friendly chatbot.\n\
-                        ${message.author.username}: ${message.content}`,
+                        ${inputMessages}`,
                 },
             ],
         });
 
-        // console.log(gptResponse.data.choices[0].message.content);
+        const generatedText = response.data.choices[0].message.content;
+
+        conversationHistory[userId] = [
+            ...previousMessages,
+            userMessage,
+            generatedText,
+        ];
+
+        // DEBUG
+        console.log(inputMessages);
+        console.log(generatedText);
         // message.reply(`You said: ${message.content}`);
 
         // reply with the latest message content
-        message.reply(`${gptResponse.data.choices[0].message.content}`);
+        message.reply(generatedText);
         return;
     } catch (err) {
+        console.error(err);
         console.log(err);
     }
 });
 
 // log in the bot on start
 client.login(process.env.DISCORD_TOKEN);
+
 console.log("DM bot is online");
