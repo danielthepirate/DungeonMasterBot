@@ -35,9 +35,6 @@ InitMessages();
 client.isPaused = false;
 
 async function sendQueryReturnResponse(message) {
-    // append user message to message history
-    messages.push({ role: "user", content: `${message.content}` });
-
     // send a request using the open ai api
     const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
@@ -95,15 +92,22 @@ client.on("messageCreate", async function (message) {
             return;
         }
 
-        // Start typing indicator
-        message.channel.sendTyping();
+        // continue the story
+        if (message.content == "!dm") {
+            // Start typing indicator
+            message.channel.sendTyping();
 
-        // send query and return response
-        const generatedText = await sendQueryReturnResponse(message);
+            // send query and return response
+            const generatedText = await sendQueryReturnResponse(message);
 
-        // reply with the latest message content
-        console.log(generatedText);
-        message.channel.send(generatedText);
+            // reply with the latest message content
+            console.log(generatedText);
+            message.channel.send(generatedText);
+            return;
+        }
+
+        // append user message to message history
+        messages.push({ role: "user", content: `${message.content}` });
     } catch (err) {
         console.error("Error:", err.message);
         if (err.response && err.response.data) {
