@@ -16,7 +16,42 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const conversationHistory = {};
+// let isDebugMode = true;
+const debugPrompt = { content: "tell me a story" };
+
+let messages;
+function InitMessages() {
+    messages = [{ role: "system", content: "You are a helpful assistant." }];
+}
+
+// init messages
+InitMessages();
+
+// Create Pause var
+client.isPaused = true;
+
+async function sendQueryReturnResponse(message) {
+    // append user message to message history
+    messages.push({ role: "user", content: `${message.content}` });
+
+    // send a request using the open ai api
+    const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: messages,
+    });
+    console.log("sending discord message..");
+
+    // store generated text and append with bot reply
+    const generatedText = response.data.choices[0].message.content;
+    messages.push({ role: "assistant", content: `${generatedText}` });
+
+    // DEBUG ECHO
+    // message.reply(`You said: ${message.content}`);
+
+    console.log(messages);
+    console.log(generatedText);
+    return generatedText;
+}
 
 // check for messages on discord when sent
 client.on("messageCreate", async function (message) {
@@ -24,52 +59,62 @@ client.on("messageCreate", async function (message) {
         // don't respond to bots (including self)
         if (message.author.bot) return;
 
-        const userId = message.author.id;
-        const userMessage = message.content;
-        const previousMessages = conversationHistory[userId] || [];
-        const inputMessages = [
-            ...previousMessages.map((message) => ({
-                role: "user",
-                text: message,
-            })),
-            { role: "user", text: userMessage },
-        ];
+        if (message.content == "!start") {
+            client.isPaused = false;
+            message.reply(`DmBot has started`);
+            return;
+        }
 
-        // send a request using the open ai api
-        const response = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
-            messages: [
-                {
-                    role: "user",
-                    content: `You are are friendly chatbot.\n\
-                        ${inputMessages}`,
-                },
-            ],
-        });
+        if (message.content == "!pause") {
+            client.isPaused = true;
+            message.reply(`DmBot has paused`);
+            return;
+        }
 
-        const generatedText = response.data.choices[0].message.content;
+        if (message.content == "!reset") {
+            InitMessages();
+            message.reply(`DmBot has reset`);
+            return;
+        }
 
-        conversationHistory[userId] = [
-            ...previousMessages,
-            userMessage,
-            generatedText,
-        ];
+        if (message.content == "!stop") {
+            client.isPaused = true;
+            InitMessages();
+            message.reply(`DmBot has stopped`);
+            return;
+        }
 
-        // DEBUG
-        console.log(inputMessages);
-        console.log(generatedText);
-        // message.reply(`You said: ${message.content}`);
+        console.log(client.isPaused);
+        if (client.isPaused) {
+            message.reply(`DmBot hasn't been started yet`);
+            console.log("is paused");
+            return;
+        }
+
+        // Start typing indicator
+        message.channel.sendTyping();
+
+        // send query and return response
+        const generatedText = await sendQueryReturnResponse(message);
 
         // reply with the latest message content
-        message.reply(generatedText);
-        return;
+        console.log(generatedText);
+        message.channel.send(generatedText);
     } catch (err) {
-        console.error(err);
+        console.error("Error:", err.message);
+        if (err.response && err.response.data) {
+            console.error("Response data:", err.response.data);
+        }
         console.log(err);
     }
 });
 
 // log in the bot on start
 client.login(process.env.DISCORD_TOKEN);
-
 console.log("DM bot is online");
+
+// check for debug prompt
+if (typeof isDebugMode !== "undefined" && isDebugMode) {
+    console.log("sending debug prompt..");
+    sendQueryReturnResponse(debugPrompt);
+}
