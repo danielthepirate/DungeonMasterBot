@@ -93,7 +93,14 @@ client.on("messageCreate", async function (message) {
         }
 
         // continue the story
-        if (message.content == "!dm") {
+
+        if (message.content.endsWith('!')) {
+            console.log("The message ends with an exclamation mark!");
+        }
+
+        const isDmCommand = (message.content == "!dm")
+        const messageEndsWithExclamationMark = (message.content.endsWith('!'))
+        if (isDmCommand || messageEndsWithExclamationMark) {
             // Start typing indicator
             message.channel.sendTyping();
 
