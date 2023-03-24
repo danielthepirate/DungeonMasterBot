@@ -1,3 +1,7 @@
+// get prompt
+const prompt_dm = require("./prompt_dm.js");
+const prompt_test = require("./prompt_test.js");
+
 // create discord bot using open AI apis
 require("dotenv").config();
 
@@ -21,14 +25,14 @@ const debugPrompt = { content: "tell me a story" };
 
 let messages;
 function InitMessages() {
-    messages = [{ role: "system", content: "You are a helpful assistant." }];
+    messages = [{ role: "system", content: prompt_dm }];
 }
 
 // init messages
 InitMessages();
 
 // Create Pause var
-client.isPaused = true;
+client.isPaused = false;
 
 async function sendQueryReturnResponse(message) {
     // append user message to message history
