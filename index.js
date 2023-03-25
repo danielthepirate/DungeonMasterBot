@@ -1,9 +1,9 @@
 // get prompt
-const prompt_dm = require("./prompt_dm.js");
-const prompt_test = require("./prompt_test.js");
-const party = require("./party_us.js");
-const story = require("./story_woodhaven.js");
-const prompt = prompt_dm.concat(party, story)
+const input = require("./prompt_lando.js");
+// const input = require("./prompt_dm.js");
+const party = require("./party_flynn.js");
+const story = require("./story_warlock.js");
+const prompt = input.concat(party, story);
 
 // create discord bot using open AI apis
 require("dotenv").config();
