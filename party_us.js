@@ -1,0 +1,2 @@
+const party =  "The party will be two characters: Finn and Eleanor. Finn is a shapeshifter level 3 warlock (pact of the tome). Eleanor is a half-elf level 3. rogue (thief). They just recently met a tavern."
+module.exports = party

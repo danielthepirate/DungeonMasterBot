@@ -1,6 +1,9 @@
 // get prompt
 const prompt_dm = require("./prompt_dm.js");
 const prompt_test = require("./prompt_test.js");
+const party = require("./party_us.js");
+const story = require("./story_woodhaven.js");
+const prompt = prompt_dm.concat(party, story)
 
 // create discord bot using open AI apis
 require("dotenv").config();
@@ -25,7 +28,7 @@ const debugPrompt = { content: "tell me a story" };
 
 let messages;
 function InitMessages() {
-    messages = [{ role: "system", content: prompt_dm }];
+    messages = [{ role: "system", content: prompt }];
 }
 
 // init messages
