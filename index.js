@@ -46,7 +46,6 @@ async function SendMessage(message) {
     message.channel.sendTyping();
 
     // send query and return response
-    message.content = message.content.slice(0, -1);
     const generatedText = await sendQueryReturnResponse(message);
 
     // reply with the latest message content
@@ -116,6 +115,7 @@ client.on("messageCreate", async function (message) {
         const doesMessageExclaim = message.content.endsWith("!");
         if (doesMessageExclaim) {
             console.log("The message ends with an exclamation mark!");
+            message.content = message.content.slice(0, -1);
         }
 
         // the message ends with "?"
