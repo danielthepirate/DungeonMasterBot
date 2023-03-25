@@ -37,6 +37,23 @@ InitMessages();
 // Create Pause var
 client.isPaused = false;
 
+function isNumeric(str) {
+    return !isNaN(str) && !isNaN(parseFloat(str));
+}
+
+async function SendMessage(message) {
+    // Start typing indicator
+    message.channel.sendTyping();
+
+    // send query and return response
+    message.content = message.content.slice(0, -1);
+    const generatedText = await sendQueryReturnResponse(message);
+
+    // reply with the latest message content
+    console.log(generatedText);
+    message.channel.send(generatedText);
+}
+
 async function sendQueryReturnResponse(message) {
     // send a request using the open ai api
     const response = await openai.createChatCompletion({
@@ -88,31 +105,34 @@ client.on("messageCreate", async function (message) {
             return;
         }
 
-        console.log(client.isPaused);
         if (client.isPaused) {
             message.reply(`DmBot hasn't been started yet`);
             console.log("is paused");
             return;
         }
 
-        // continue the story
-
-        if (message.content.endsWith('!')) {
+        // continue the story under these conditions
+        // the message ends with "!"
+        const doesMessageExclaim = message.content.endsWith("!");
+        if (doesMessageExclaim) {
             console.log("The message ends with an exclamation mark!");
         }
 
-        const isDmCommand = (message.content == "!dm")
-        const messageEndsWithExclamationMark = (message.content.endsWith('!'))
-        if (isDmCommand || messageEndsWithExclamationMark) {
-            // Start typing indicator
-            message.channel.sendTyping();
+        // the message ends with "?"
+        const isMessageQuestion = message.content.endsWith("?");
+        if (isMessageQuestion) {
+            console.log("The message ends with an question mark?");
+        }
 
-            // send query and return response
-            const generatedText = await sendQueryReturnResponse(message);
-
-            // reply with the latest message content
-            console.log(generatedText);
-            message.channel.send(generatedText);
+        const isMessageNumber = isNumeric(message.content);
+        const isDmCommand = message.content == "!dm";
+        if (
+            isDmCommand ||
+            doesMessageExclaim ||
+            isMessageQuestion ||
+            isMessageNumber
+        ) {
+            SendMessage(message);
             return;
         }
 
