@@ -1,0 +1,3 @@
+const party =
+    "Player characters (ie, the party) are controlled by players. There will be 2 player characters. Pebble Rockfoot, a dwarf wizard who has a fascination with the natural world. Pebble is shy but kind-hearted and uses her magical abilities to communicate with animals and manipulate the elements. Thorn Oakenshield, a human paladin who seeks to protect the innocent and uphold the virtues of honor and compassion. Thorn's strong moral compass and unwavering determination make him an invaluable ally in times of need. Both heroes are level 2. Please generate stats for each player character and add their bonuses to relevant skill checks.";
+module.exports = party;
