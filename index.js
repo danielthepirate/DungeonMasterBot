@@ -13,7 +13,6 @@ const rule_gameplay = formatInputChunk("Gameplay", gameplay);
 const rule_party = formatInputChunk("Player Characters", party);
 const rule_story = formatInputChunk("Story", story);
 const prompt = input.concat("\n", rule_gameplay, rule_party, rule_story);
-console.log(prompt);
 
 // create discord bot using open AI apis
 require("dotenv").config();
@@ -49,20 +48,25 @@ function isNumeric(str) {
 }
 
 async function SendMessage(message) {
+    console.log("BBB");
+
     // Start typing indicator
     message.channel.sendTyping();
+    console.log("##### REQUEST:\n" + message.content);
 
     // send query and return response
     const generatedText = await sendQueryReturnResponse(message);
+    console.log("##### RESPONSE:\n" + generatedText);
 
     // reply with the latest message content
-    console.log(generatedText);
     message.channel.send(generatedText);
 }
 
 async function SendCustomMessage(message, inputString) {
     // Replace the message content with the input string
     message.content = inputString;
+
+    console.log("AAA");
 
     // Call the original SendMessage function with the modified message
     await SendMessage(message);
@@ -74,7 +78,6 @@ async function sendQueryReturnResponse(message) {
         model: "gpt-3.5-turbo",
         messages: messages,
     });
-    console.log("sending discord message..");
 
     // append user message to message history
     messages.push({ role: "user", content: `${message.content}` });
@@ -86,8 +89,8 @@ async function sendQueryReturnResponse(message) {
     // DEBUG ECHO
     // message.reply(`You said: ${message.content}`);
 
-    console.log(messages);
-    console.log(generatedText);
+    // console.log(messages);
+    // console.log(generatedText);
     return generatedText;
 }
 
@@ -106,7 +109,6 @@ client.on("messageCreate", async function (message) {
         if (message.content == "!run") {
             client.isPaused = false;
             message.reply(`DmBot has started with [run]`);
-            console.log(go);
             SendCustomMessage(message, go);
             return;
         }
