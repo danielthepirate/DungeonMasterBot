@@ -6,7 +6,7 @@ const story = require("./story_warlock.js");
 const go = require("./run_dm_bot_flynn_tavern.js");
 
 function formatInputChunk(name, input) {
-    return `${name}: \n###\n${input}\n###`;
+    return `\n${name}: ###\n${input}\n###`;
 }
 
 const rule_gameplay = formatInputChunk("Gameplay", gameplay);
