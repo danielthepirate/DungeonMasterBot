@@ -1,9 +1,19 @@
 // get prompt
-const input = require("./prompt_lando.js");
-// const input = require("./prompt_dm.js");
+const input = require("./prompt_gameplay.js");
+const gameplay = require("./rules_gameplay.js");
 const party = require("./party_flynn.js");
 const story = require("./story_warlock.js");
-const prompt = input.concat(party, story);
+const go = require("./run_dm_bot_flynn_tavern.js");
+
+function formatInputChunk(name, input) {
+    return `${name}: \n###\n${input}\n###`;
+}
+
+const rule_gameplay = formatInputChunk("Gameplay", gameplay);
+const rule_party = formatInputChunk("Player Characters", party);
+const rule_story = formatInputChunk("Story", story);
+const prompt = input.concat(rule_gameplay, rule_party, rule_story);
+console.log(prompt);
 
 // create discord bot using open AI apis
 require("dotenv").config();
