@@ -153,6 +153,7 @@ async function sendQueryReturnResponse() {
     console.log("##### REQUEST");
     console.log(messages);
     console.log("##### END REQUEST");
+    // message.reply(`You said: ${message.content}`);
 
     // send a request using the open ai api
     const response = await openai.createChatCompletion({
@@ -163,12 +164,6 @@ async function sendQueryReturnResponse() {
     // store generated text and append with bot reply
     const generatedText = response.data.choices[0].message.content;
     messages.push({ role: "assistant", content: `${generatedText}` });
-
-    // DEBUG ECHO
-    // message.reply(`You said: ${message.content}`);
-
-    // console.log(messages);
-    // console.log(generatedText);
     return generatedText;
 }
 
