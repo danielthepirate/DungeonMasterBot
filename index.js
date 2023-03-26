@@ -33,9 +33,6 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-// let isDebugMode = true;
-const debugPrompt = { content: "tell me a story" };
-
 let messages;
 function InitMessages() {
     messages = [{ role: "system", content: prompt }];
@@ -63,6 +60,14 @@ async function SendMessage(message) {
     message.channel.send(generatedText);
 }
 
+async function SendCustomMessage(message, inputString) {
+    // Replace the message content with the input string
+    message.content = inputString;
+
+    // Call the original SendMessage function with the modified message
+    await SendMessage(message);
+}
+
 async function sendQueryReturnResponse(message) {
     // send a request using the open ai api
     const response = await openai.createChatCompletion({
@@ -70,6 +75,9 @@ async function sendQueryReturnResponse(message) {
         messages: messages,
     });
     console.log("sending discord message..");
+
+    // append user message to message history
+    messages.push({ role: "user", content: `${message.content}` });
 
     // store generated text and append with bot reply
     const generatedText = response.data.choices[0].message.content;
@@ -92,6 +100,13 @@ client.on("messageCreate", async function (message) {
         if (message.content == "!start") {
             client.isPaused = false;
             message.reply(`DmBot has started`);
+            return;
+        }
+
+        if (message.content == "!run") {
+            client.isPaused = false;
+            message.reply(`DmBot has started with [run]`);
+            SendCustomMessage(message, go);
             return;
         }
 
@@ -145,9 +160,6 @@ client.on("messageCreate", async function (message) {
             SendMessage(message);
             return;
         }
-
-        // append user message to message history
-        messages.push({ role: "user", content: `${message.content}` });
     } catch (err) {
         console.error("Error:", err.message);
         if (err.response && err.response.data) {
