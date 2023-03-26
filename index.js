@@ -1,5 +1,5 @@
 // get prompt
-const input = require("./prompt_gameplay.js");
+const input = require("./system_dmbot.js");
 const gameplay = require("./rules_gameplay.js");
 const party = require("./party_flynn.js");
 const story = require("./story_warlock.js");
