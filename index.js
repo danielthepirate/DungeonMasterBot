@@ -14,6 +14,9 @@ const rule_party = formatInputChunk("Player Characters", party);
 const rule_story = formatInputChunk("Story", story);
 const prompt = input.concat(rule_gameplay, rule_party, rule_story);
 
+const maxQualityResponses = 3;
+let currentQualityResponses = maxQualityResponses;
+
 // DEBUG
 console.log("##### PROMPT");
 console.log(prompt);
@@ -50,6 +53,11 @@ InitMessages();
 
 // Create Pause var
 client.isPaused = false;
+
+// check quality tokens
+function hasQualityResponsesLeft() {
+    return currentQualityResponses > 0;
+}
 
 // check if input is number
 function isNumeric(str) {
@@ -149,8 +157,24 @@ async function SendCustomMessage(message, input) {
 }
 
 async function sendQueryReturnResponse() {
+    const modelFast = "gpt-3.5-turbo";
+    const modelQuality = "gpt-4";
+
+    // check for quality tokens
+    let model = modelFast;
+    if (currentQualityResponses > 0) {
+        model = modelQuality;
+        currentQualityResponses -= 1;
+        console.log(
+            "quality tokens: " +
+                `${currentQualityResponses}` +
+                "/" +
+                `${maxQualityResponses}`
+        );
+    }
+
     // DEBUG
-    console.log("##### REQUEST");
+    console.log("##### REQUEST (" + `${model}` + ")");
     console.log(messages);
     console.log("##### END REQUEST");
     // message.reply(`You said: ${message.content}`);
