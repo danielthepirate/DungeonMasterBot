@@ -6,13 +6,13 @@ const story = require("./story_warlock.js");
 const go = require("./run_dm_bot_flynn_tavern.js");
 
 function formatInputChunk(name, input) {
-    return `${name}: \n###\n${input}\n###`;
+    return `\n${name}: ###\n${input}\n###`;
 }
 
 const rule_gameplay = formatInputChunk("Gameplay", gameplay);
 const rule_party = formatInputChunk("Player Characters", party);
 const rule_story = formatInputChunk("Story", story);
-const prompt = input.concat(rule_gameplay, rule_party, rule_story);
+const prompt = input.concat("\n", rule_gameplay, rule_party, rule_story);
 console.log(prompt);
 
 // create discord bot using open AI apis
@@ -106,6 +106,7 @@ client.on("messageCreate", async function (message) {
         if (message.content == "!run") {
             client.isPaused = false;
             message.reply(`DmBot has started with [run]`);
+            console.log(go);
             SendCustomMessage(message, go);
             return;
         }
