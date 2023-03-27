@@ -1,8 +1,8 @@
 // get prompt
-const input = require("./system_dmbot.js");
-const gameplay = require("./rules_gameplay.js");
-const party = require("./party_flynn.js");
-const story = require("./story_warlock.js");
+const input = require("./system_dmbot_lando.js");
+const gameplay = require("./rules_gameplay_lando.js");
+const party = require("./party_lando.js");
+const story = require("./story_lando_01.js");
 const go = require("./run_dm_bot_flynn_tavern.js");
 
 function formatInputChunk(name, input) {
