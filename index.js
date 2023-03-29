@@ -1,18 +1,20 @@
 // get prompt
-const input = require("./system_dmbot_lando.js");
-const gameplay = require("./rules_gameplay_lando.js");
-const party = require("./party_lando.js");
-const story = require("./story_lando_01.js");
-const go = require("./run_dm_bot_flynn_tavern.js");
+const input = require("./system_dnd_5e.js");
+// const gameplay = require("./rules_gameplay_lando.js");
+// const party = require("./party_lando.js");
+// const story = require("./story_lando_01.js");
+// const go = require("./run_dm_bot_flynn_tavern.js");
+const go = require("./run_dm_random.js");
 
 function formatInputChunk(name, input) {
     return `\n${name}: ###\n${input}\n###`;
 }
 
-const rule_gameplay = formatInputChunk("Gameplay", gameplay);
-const rule_party = formatInputChunk("Player Characters", party);
-const rule_story = formatInputChunk("Story", story);
-const prompt = input.concat(rule_gameplay, rule_party, rule_story);
+// const rule_gameplay = formatInputChunk("Gameplay", gameplay);
+// const rule_party = formatInputChunk("Player Characters", party);
+// const rule_story = formatInputChunk("Story", story);
+// const prompt = input.concat(rule_gameplay, rule_party, rule_story);
+const prompt = input;
 
 const maxQualityResponses = 3;
 let currentQualityResponses = maxQualityResponses;
