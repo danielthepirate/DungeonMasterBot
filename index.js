@@ -178,7 +178,7 @@ async function sendQueryReturnResponse() {
     // DEBUG
     console.log("##### REQUEST (" + `${model}` + ")");
     console.log(messages);
-    console.log("##### END REQUEST");
+    console.log("##### END REQUEST(" + `${model}` + ")");
     // message.reply(`You said: ${message.content}`);
 
     // send a request using the open ai api
